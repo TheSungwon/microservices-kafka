@@ -1,0 +1,49 @@
+spring:
+
+  application:
+    name: order-service
+
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/microservice_db
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      # Kafka 메시지 키를 문자열로 직렬화
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+
+      # Kafka 메시지 값을 JSON 형태로 직렬화
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+      properties:
+        # Kafka 메시지에 Java 클래스 정보(type headers)를 포함하지 않도록 설정
+        # 수신 측에서 해당 정보가 필요 없거나 보안상 숨기고 싶은 경우 false로 설정
+        spring.json.add.type.headers: false
+
+      retries: 0
+
+
+  profiles:
+    active: local # 기본은 local로. 컨테이너로 돌릴 때 docker로 바꾸면 됨.
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.apache.kafka: info
+
+server:
+  port: 8080
